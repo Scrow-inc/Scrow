@@ -1,12 +1,11 @@
-import {Navbar} from "./components/components"
+import { Navbar , Hero , Steps } from "./components/components"
 
 function App() {
   return (
-    <div className="App">
+    <div className="App gradient-bg">
       <Navbar/>
-      <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+      <Hero/>
+      <Steps/>
     </div>
   );
 }
