@@ -1,7 +1,7 @@
 const Hero = () => {
     return ( 
-        <div className="min-h-screen text-white flex flex-col justify-center items-center">
-            <h1 className="text-6xl font-bold">
+        <div className="min-h-screen purple-gradient text-white flex flex-col justify-center items-center">
+            <h1 className="text-6xl font-bold text-center">
                 Decentralized Escrow
             </h1>
             <p className="w-96 my-2 text-center">
@@ -11,9 +11,9 @@ const Hero = () => {
                 <button className="py-2 px-7 font-semibold bg-[#7b3fe4] rounded-full">
                     GET STARTED
                 </button>
-                <button className="py-2 px-7 font-semibold bg-[white] rounded-full text-indigo-600">
+                {/* <button className="py-2 px-7 font-semibold bg-[white] rounded-full text-indigo-600">
                     LEARN MORE
-                </button>
+                </button> */}
             </div>
         </div>
      );
