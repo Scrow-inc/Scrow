@@ -39,7 +39,7 @@ contract Escrow is ReentrancyGuard {
         uint256 amount;
         uint256 timeStamp;
         address owner;
-        address  ;
+        address signee;
         uint256 timeDelivered;
         uint256 timeAccepted;
         Status status;
@@ -95,7 +95,7 @@ contract Escrow is ReentrancyGuard {
         newAggremnt.amount = _amount;
         newAggremnt.timeStamp = block.timestamp;
         newAggremnt.owner = msg.sender;
-        newAggremnt.developer = address(0);
+        newAggremnt.signee = address(0);
         newAggremnt.isConfirmed = false;
         newAggremnt.isAvailable = Available.YES;
         newAggremnt.status = Status.OPEN;
@@ -106,7 +106,7 @@ contract Escrow is ReentrancyGuard {
         aggrements[aggrementId] = newAggremnt;
         
         pay( companyAcc , _amount);
-        companyBal += _amount
+        companyBal += _amount;
         
         emit Action(aggrementId, "AGGREEMENT CREATED", Status.OPEN, msg.sender);
         return true;
@@ -140,7 +140,7 @@ contract Escrow is ReentrancyGuard {
     function withdraw( address to, uint256 amt) external returns (bool){
         // check if conditions are met 
         require( msg.sender == companyAcc , " User not allowed ");
-        require( amt > 0 ether && amount <= companyProfit , " withdrawal amount too low");
+        require( amt > 0 ether && amt <= companyProfit , " withdrawal amount too low");
 
         // perform transaction
         pay(to,amt);
@@ -184,7 +184,7 @@ contract Escrow is ReentrancyGuard {
 
     //function to send money from the smart contract to another account
     function pay( address to, uint256 amt ) internal returns (bool){
-        ( bool status) = payable(to).call{ value: amt }("");
+        ( bool status,) = payable(to).call{ value: amt }("");
         require(status, " Payment Unsuccessfull ");
         return true;
     }
