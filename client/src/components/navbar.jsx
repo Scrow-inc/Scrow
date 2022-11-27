@@ -10,11 +10,11 @@ const NavbarItem = ({ title, classProps }) => {
     )
 }
 
-const Navbar = () => {
+const Navbar = ({ connectWallet, balance }) => {
     const [toggleMenu, setToggleMenu] = useState(false);
 
     return ( 
-        <nav className="w-full px-4 justify-between flex items-center bg text-white fixed top-0 left-0 right-0 z-20">
+        <nav className="w-full px-5 justify-between flex items-center bg text-white fixed top-0 left-0 right-0 z-20">
             <div className="logo">
                 scrow<span className="text-[#7b3fe4]">.</span>
             </div>
@@ -22,7 +22,10 @@ const Navbar = () => {
                 {["How to", "News" , "About Us"].map((item , index) => (
                     <NavbarItem key={item + index} title={item}/>
                 ))}
-                <li className="bg-[#7b3fe4] py-2 px-7 mx-4 rounded-full cursor-pointer hover:[#6433b9]">Connect Wallet</li>
+                <li 
+                    className="bg-[#7b3fe4] py-2 px-7 mx-4 rounded-full cursor-pointer hover:[#6433b9] hover:cursor-pointer" 
+                    onClick={() => {connectWallet()}} 
+                >{balance ? 'Balance: '+balance : 'Connect Wallet'}</li>
             </ul>
             <div className="flex relative">
                 { toggleMenu 
@@ -37,8 +40,8 @@ const Navbar = () => {
                             <AiOutlineClose onClick={() => setToggleMenu(false)}/>
                         </li>
                         {["How to", "News" , "About Us"].map((item , index) => (
-                    <NavbarItem key={item + index} title={item} classProps="my-4 text-3xl"/>
-                ))}
+                            <NavbarItem key={item + index} title={item} classProps="my-4 text-3xl"/>
+                        ))}
                     </ul>
                 )}
             </div>
