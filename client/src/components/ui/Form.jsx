@@ -1,7 +1,9 @@
+import React from 'react';
+
 export const TextInput = ({ label, name, type, marker, ...rest }) => {
 	return (
 		<div className='relative my-4'>
-			<label class='text-gray-700 dark:text-gray-200' for={name}>
+			<label className='text-gray-700 dark:text-gray-200' htmlFor={name}>
 				{label}
 			</label>
 			{marker && (
@@ -21,17 +23,18 @@ export const TextInput = ({ label, name, type, marker, ...rest }) => {
 	);
 };
 
-export const TextInputArea = ({}) => {
+export const TextInputArea = ({...rest}) => {
 	return (
 		<div>
-			<label for='message' class='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
+			<label htmlFor='message' className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>
 				Contract Details
 			</label>
 			<textarea
 				id='message'
 				rows='8'
-				class='block p-2.5 w-full text-sm text-gray-300 bg-primary border border-gray-600 rounded-md focus:outline-none focus:ring-[1px] focus:ring-main'
+				className='block p-2.5 w-full text-sm text-gray-300 bg-primary border border-gray-600 rounded-md focus:outline-none focus:ring-[1px] focus:ring-main'
 				placeholder='Write your agreements here...'
+				{...rest}
 			></textarea>
 		</div>
 	);

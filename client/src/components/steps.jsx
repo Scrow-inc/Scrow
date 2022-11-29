@@ -1,3 +1,5 @@
+import React from 'react';
+
 const StepCard = ({ color, title, step, subtitle }) => (
 	<div className='flex items-center  glassmorphism p-7 m-2 hover:shadow-xl'>
 		<div className={`w-10 h-10 rounded-full flex justify-center items-center text-white font-bold ${color}`}>

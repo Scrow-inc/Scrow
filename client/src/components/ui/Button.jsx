@@ -1,3 +1,5 @@
+import React from 'react';
+
 export default function Button({ title, variant = 'primary', ...rest }) {
 	const color =
 		variant === 'primary'
