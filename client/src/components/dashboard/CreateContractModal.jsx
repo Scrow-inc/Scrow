@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Modal from '../ui/Modal';
 import ContractForm from './ContractForm';
 import { ContractTerms } from './ContractTerms';

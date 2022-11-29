@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Hero = () => {
 	return (
 		<div className='w-full min-h-screen purple-gradient text-white flex flex-col justify-center items-center px-2 mx-auto'>

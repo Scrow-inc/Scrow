@@ -23,7 +23,6 @@ async function main() {
     await escrow.deployed();
   
     console.log("Token address:", escrow.address);
-
       // We also save the contract's artifacts and address in the frontend directory
       saveFrontendFiles(escrow);
 }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function PolygonIcon({ width = '25', height = '25' }) {
 	return (
 		<svg xmlns='http://www.w3.org/2000/svg' width={width} height={height} fill='none' viewBox='0 0 1024 1024'>
