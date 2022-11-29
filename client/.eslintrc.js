@@ -1,27 +1,14 @@
 module.exports = {
 	env: {
-		commonjs: true,
-		node: true,
 		browser: true,
-		es6: true,
-		jest: true,
+		es2021: true,
 	},
-	extends: ['eslint:recommended', 'plugin:react/recommended'],
-	globals: {},
-	parser: 'babel-eslint',
+	extends: ['plugin:react/recommended'],
+	overrides : [],
 	parserOptions: {
-		ecmaFeatures: {
-			jsx: true,
-		},
-		ecmaVersion: 2018,
+		ecmaVersion: "latest",
 		sourceType: 'module',
 	},
-	plugins: ['react', 'import', 'react-hooks'],
-	ignorePatterns: ['node_modules/'],
+	plugins: ['react'],
 	rules: {},
-	settings: {
-		react: {
-			version: 'latest', // "detect" automatically picks the version you have installed.
-		},
-	},
 };
