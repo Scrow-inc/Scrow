@@ -1,3 +1,4 @@
+import React from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { RiArrowLeftLine, RiCloseFill } from 'react-icons/ri';
 import { Fragment } from 'react';
