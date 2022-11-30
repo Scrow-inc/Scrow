@@ -25,7 +25,7 @@ export function ContractTerms({ nextStep }) {
 			</p>
 
 			<div className='flex justify-center flex-col  w-full my-8'>
-				<Button title={'Contuninue'} variant={'primary'} onClick={nextStep} />
+				<Button title={'Continue'} variant={'primary'} onClick={nextStep} />
 			</div>
 		</div>
 	);

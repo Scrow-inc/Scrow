@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Hero, Steps, NoWalletDetected, NetworkErrorMessage, AppSection } from './components/components';
 import { ethers } from 'ethers';
 
-import EscrowArtifacts from './contracts/Escrow.json';
-import contractAddress from './contracts/contract-address.json';
+import EscrowArtifacts from './utils/Escrow.json';
+import contractAddress from './utils/contract-address.json';
 
 const HARDHAT_NETWORK_ID = '8545';
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import {React , useState} from 'react';
 import { PolygonIcon } from '../PolygonIcon';
 import Button from '../ui/Button';
 import { TextInput, TextInputArea } from '../ui/Form';
@@ -9,7 +9,7 @@ export default function ContractForm() {
 	const [available, setAvailable] = useState(false);
 	return (
 		<div>
-			<h5 className='font-orbitron text-[20px] leading-[30px] text-white'>Creat new cintract agreement</h5>
+			<h5 className='font-orbitron text-[20px] leading-[30px] text-white'>Create new contract agreement</h5>
 
 			<div className='my-8'>
 				<TextInput
