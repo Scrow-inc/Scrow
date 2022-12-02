@@ -37,6 +37,25 @@ function App() {
 		console.log('mydata', data);
 	};
 
+	const onClickConnect = () => {
+		//client side code
+		if (!window.ethereum) {
+			console.log('please install MetaMask');
+			return;
+		}
+
+		//we can do it using ethers.js
+		const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+		// MetaMask requires requesting permission to connect users accounts
+		provider
+			.send('eth_requestAccounts', [])
+			.then((accounts) => {
+				if (accounts.length > 0) setCurrentAccount(accounts[0]);
+			})
+			.catch((e) => console.log(e));
+	};
+
 	const Initailize = async () => {
 		await provider.getBalance(currentAccount).then((result) => {
 			setBalance(ethers.utils.formatEther(result));
@@ -64,7 +83,7 @@ function App() {
 	return (
 		<div className='w-full gradient-bg'>
 			{networkError && <NetworkErrorMessage message={networkError} dismiss={() => dismissNetworkError()} />}
-			<Navbar balance={balance} />
+			<Navbar connectWallet={onClickConnect} balance={balance} />
 			{currentAccount && (
 				<>
 					<AppSection />
