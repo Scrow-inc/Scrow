@@ -26,8 +26,8 @@ const NavbarItem = ({ section, title, classProps }) => {
 	);
 };
 
-const Navbar = ({ balance }) => {
-	const { connectWallet } = useContext(TransactionContext);
+const Navbar = ({ connectWallet , balance }) => {
+	// const { connectWallet } = useContext(TransactionContext);
 	const [toggleMenu, setToggleMenu] = useState(false);
 
 	return (
@@ -41,7 +41,10 @@ const Navbar = ({ balance }) => {
 				))}
 				<li
 					className='bg-[#7b3fe4] py-2 px-7 mx-4 rounded-full cursor-pointer hover:[#6433b9] hover:cursor-pointer'
-					onClick={connectWallet}
+					// onClick={connectWallet}
+					onClick={() => {
+						connectWallet();
+					}}
 				>
 					{balance ? 'Balance: ' + balance : 'Connect Wallet'}
 				</li>

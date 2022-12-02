@@ -18,6 +18,7 @@ const getEthereumContract = () => {
 export const TransactionProvider = ({ children }) => {
     const [currentAccount, setCurrentAccount] = useState("");
     const [formData, setformData] = useState({ price: "", agreement: "" });
+    const [isLoading, setIsLoading] = useState(false);
 
     // Check if wallet is connected
     const checkWalletConnected = async () => {
@@ -43,7 +44,8 @@ export const TransactionProvider = ({ children }) => {
     
           const accounts = await ethereum.request({ method: "eth_requestAccounts", });
           setCurrentAccount(accounts[0]);
-          window.location.reload();
+          // window.location.reload();
+          // console.log("clicked");
         } catch (error) {
           console.log(error);
           throw new Error("No ethereum object");
@@ -53,6 +55,7 @@ export const TransactionProvider = ({ children }) => {
     // Handle Form Input Event
     const handleChange = (e, name) => {
       setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
+      console.log(name);
     };
 
     // Create Contract
@@ -74,6 +77,13 @@ export const TransactionProvider = ({ children }) => {
             });
 
             const transactionHash = transactionContract.addToBlockchain(price, agreement);
+
+            setIsLoading(true);
+            console.log(`Loading = ${transactionHash.hash}`);
+            await transactionHash.wait();
+            setIsLoading(false);
+            console.log(`Success = ${transactionHash.hash}`);
+
           } catch (error) {
               console.log(error);
               throw new Error("No ethereum object");
