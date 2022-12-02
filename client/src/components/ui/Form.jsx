@@ -32,6 +32,7 @@ export const TextInputArea = ({...rest}) => {
 			<textarea
 				id='message'
 				rows='8'
+				name='agreement'
 				className='block p-2.5 w-full text-sm text-gray-300 bg-primary border border-gray-600 rounded-md focus:outline-none focus:ring-[1px] focus:ring-main'
 				placeholder='Write your agreements here...'
 				{...rest}

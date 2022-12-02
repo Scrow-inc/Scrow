@@ -1,6 +1,8 @@
-import React from 'react';
+import {React , useContext} from 'react';
+import { TransactionContext } from '../context/transactionContext';
 
 const Hero = () => {
+	const { connectWallet } = useContext(TransactionContext);
 	return (
 		<div className='w-full min-h-screen purple-gradient text-white flex flex-col justify-center items-center px-2 mx-auto'>
 			<h1 className='text-4xl md:text-6xl font-bold text-center'>Decentralized Escrow</h1>
@@ -9,10 +11,9 @@ const Hero = () => {
 				care of the rest.
 			</p>
 			<div className='my-4 flex justify-center items-center gap-2'>
-				<button className='py-2 px-7 font-semibold bg-[#7b3fe4] rounded-full'>GET STARTED</button>
-				{/* <button className="py-2 px-7 font-semibold bg-[white] rounded-full text-indigo-600">
-                    LEARN MORE
-                </button> */}
+				<button 
+				onClick={connectWallet}
+				className='py-2 px-7 font-semibold bg-[#7b3fe4] rounded-full'>GET STARTED</button>
 			</div>
 		</div>
 	);

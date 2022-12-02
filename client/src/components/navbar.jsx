@@ -1,6 +1,7 @@
-import React,{ useState } from 'react';
+import React,{ useState , useContext} from 'react';
 import { HiMenuAlt4 } from 'react-icons/hi';
 import { AiOutlineClose } from 'react-icons/ai';
+import { TransactionContext } from '../context/transactionContext';
 
 const navs = [
 	{
@@ -25,7 +26,8 @@ const NavbarItem = ({ section, title, classProps }) => {
 	);
 };
 
-const Navbar = ({ connectWallet, balance }) => {
+const Navbar = ({ balance }) => {
+	const { connectWallet } = useContext(TransactionContext);
 	const [toggleMenu, setToggleMenu] = useState(false);
 
 	return (
@@ -39,9 +41,7 @@ const Navbar = ({ connectWallet, balance }) => {
 				))}
 				<li
 					className='bg-[#7b3fe4] py-2 px-7 mx-4 rounded-full cursor-pointer hover:[#6433b9] hover:cursor-pointer'
-					onClick={() => {
-						connectWallet();
-					}}
+					onClick={connectWallet}
 				>
 					{balance ? 'Balance: ' + balance : 'Connect Wallet'}
 				</li>
