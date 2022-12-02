@@ -1,6 +1,9 @@
 import React from 'react';
+import { TransactionContext } from '../../context/transactionContext';
 
-export const TextInput = ({ label, name, type, marker, ...rest }) => {
+export const TextInput = ({ label, name, type, value, marker, ...rest }) => {
+	const { handleChange } = useContext(TransactionContext);
+
 	return (
 		<div className='relative my-4'>
 			<label className='text-gray-700 dark:text-gray-200' htmlFor={name}>
@@ -14,6 +17,8 @@ export const TextInput = ({ label, name, type, marker, ...rest }) => {
 			<input
 				type={type}
 				name={name}
+				value={value}
+				onChange={(e) => handleChange(e, name)}
 				className={`block ${
 					marker && 'pl-10 pr-4'
 				} w-full px-4 p-2.5 mt-2 text-gray-300 bg-primary border border-gray-600 rounded-md focus:outline-none focus:ring-[1px] focus:ring-main`}
@@ -32,6 +37,9 @@ export const TextInputArea = ({...rest}) => {
 			<textarea
 				id='message'
 				rows='8'
+				name='agreement'
+				value={value}
+				onChange={(e) => handleChange(e, name)}
 				className='block p-2.5 w-full text-sm text-gray-300 bg-primary border border-gray-600 rounded-md focus:outline-none focus:ring-[1px] focus:ring-main'
 				placeholder='Write your agreements here...'
 				{...rest}

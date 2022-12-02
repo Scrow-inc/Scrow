@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar, Hero, Steps, NoWalletDetected, NetworkErrorMessage, AppSection } from './components/components';
 import { ethers } from 'ethers';
+import { TransactionContext } from './context/transactionContext';
 
 import EscrowArtifacts from './utils/Escrow.json';
 import contractAddress from './utils/contract-address.json';
@@ -51,24 +52,6 @@ function App() {
 		console.log('chainname', chainname);
 		console.log('currentAccount', currentAccount);
 	};
-	const onClickConnect = () => {
-		//client side code
-		if (!window.ethereum) {
-			console.log('please install MetaMask');
-			return;
-		}
-
-		//we can do it using ethers.js
-		const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-		// MetaMask requires requesting permission to connect users accounts
-		provider
-			.send('eth_requestAccounts', [])
-			.then((accounts) => {
-				if (accounts.length > 0) setCurrentAccount(accounts[0]);
-			})
-			.catch((e) => console.log(e));
-	};
 
 	const dismissNetworkError = () => {
 		setNetworkError(undefined);
@@ -81,7 +64,7 @@ function App() {
 	return (
 		<div className='w-full gradient-bg'>
 			{networkError && <NetworkErrorMessage message={networkError} dismiss={() => dismissNetworkError()} />}
-			<Navbar connectWallet={onClickConnect} balance={balance} />
+			<Navbar balance={balance} />
 			{currentAccount && (
 				<>
 					<AppSection />
