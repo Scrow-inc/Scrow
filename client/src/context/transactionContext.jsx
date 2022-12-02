@@ -50,17 +50,34 @@ export const TransactionProvider = ({ children }) => {
         }
       };
 
+    // Handle Form Input Event
+    const handleChange = (e, name) => {
+      setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
+    };
+
     // Create Contract
     const createContract = async () => {
         try {
             if (!ethereum) return alert("Please Install metamask");
             const transactionContract = getEthereumContract();
             const { price, agreement } = formData;
-            const parsedAmount = ethers.utils.parseEther(price)
-        } catch (error) {
-            console.log(error);
-            throw new Error("No ethereum object");
-        }
+            const parsedAmount = ethers.utils.parseEther(price);
+
+            await ethereum.request({
+              method: "eth_sendTransaction",
+              params : [{
+                  from: currentAccount,
+                  to: contractAddress,
+                  gas: '0x5208',
+                  value: parsedAmount._hex,
+              }]
+            });
+
+            const transactionHash = transactionContract.addToBlockchain(price, agreement);
+          } catch (error) {
+              console.log(error);
+              throw new Error("No ethereum object");
+          }
     }
 
     useEffect(() => {
@@ -70,7 +87,11 @@ export const TransactionProvider = ({ children }) => {
 
       return(
         <TransactionContext.Provider value={{
-            connectWallet,}}>
+            connectWallet,
+            currentAccount, 
+            formData,
+            handleChange,
+            createContract}}>
             {children}
         </TransactionContext.Provider>
     )
