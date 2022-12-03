@@ -1,7 +1,7 @@
 import React from 'react';
 
 const StepCard = ({ color, title, step, subtitle }) => (
-	<div className='flex items-center  glassmorphism p-7 m-2 hover:shadow-xl'>
+	<div className='flex items-center w-full  glassmorphism p-7 m-2 hover:shadow-xl'>
 		<div className={`w-10 h-10 rounded-full flex justify-center items-center text-white font-bold ${color}`}>
 			{step}
 		</div>
@@ -28,25 +28,25 @@ const Steps = () => {
 					color='bg-[#2952E3]'
 					title='Connect Wallet'
 					step='1'
-					subtitle='Security is guranteed. We always maintain privacy and maintain the quality of our products'
+					subtitle='Connect your Metamask wallet to the dApp'
 				/>
 				<StepCard
 					color='bg-[#8945F8]'
 					title='Sign Contract'
 					step='2'
-					subtitle='Security is guranteed. We always maintain privacy and maintain the quality of our products'
+					subtitle='Set the price you want to lock in the escrow and set your agreement terms'
 				/>
 				<StepCard
 					color='bg-[#F84550]'
 					title='Generate Link'
 					step='3'
-					subtitle='Security is guranteed. We always maintain privacy and maintain the quality of our products'
+					subtitle='A link to the agreement will be generated, copy and share with the third party'
 				/>
 				<StepCard
 					color='bg-[red]'
 					title='Release Funds'
 					step='4'
-					subtitle='Security is guranteed. We always maintain privacy and maintain the quality of our products'
+					subtitle='When the agreement terms has been adhered to mark the transaction has completed and the funds will be released'
 				/>
 			</div>
 		</section>

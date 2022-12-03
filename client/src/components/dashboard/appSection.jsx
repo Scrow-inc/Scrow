@@ -20,7 +20,7 @@ const AppSection = () => {
 				<Button title='Create New Contract' variant='primary' onClick={openModal} />
 			</div>
 			<div className=' w-full mt-10 flex items-center justify-center '>
-				<div className=' bg-white rounded-lg w-fit p-4'>
+				{/* <div className=' bg-white rounded-lg w-fit p-4'>
 					<table className=' w-full'>
 						<thead>
 							<tr className='border-b'>
@@ -36,7 +36,7 @@ const AppSection = () => {
 							</tr>
 						</thead>
 					</table>
-				</div>
+				</div> */}
 			</div>
 			<CreatecontractModal isOpen={isOpen} openModal={openModal} closeModal={closeModal} />
 		</div>
