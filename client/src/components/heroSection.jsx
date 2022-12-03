@@ -1,8 +1,8 @@
-import {React , useContext} from 'react';
-import { TransactionContext } from '../context/transactionContext';
+import {React} from 'react';
 
-const Hero = () => {
-	const { connectWallet } = useContext(TransactionContext);
+
+const Hero = ({ connectWallet}) => {
+	
 	return (
 		<div className='flex flex-col items-center justify-center w-full min-h-screen px-2 mx-auto text-white purple-gradient'>
 			<h1 className='text-4xl font-bold text-center md:text-6xl'>

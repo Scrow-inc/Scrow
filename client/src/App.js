@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Hero, Steps, NoWalletDetected, NetworkErrorMessage, AppSection } from './components/components';
+import { Navbar, Footer, Hero, Steps, NoWalletDetected, NetworkErrorMessage, AppSection } from './components/components';
 import { ethers } from 'ethers';
 import { TransactionContext } from './context/transactionContext';
 
@@ -91,8 +91,9 @@ function App() {
 			)}
 			{!currentAccount && (
 				<>
-					<Hero />
+					<Hero connectWallet={onClickConnect}/>
 					<Steps />
+					<Footer/>
 				</>
 			)}
 		</div>
