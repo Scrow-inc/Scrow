@@ -11,9 +11,11 @@ export const TextInput = ({ label, name, type, value, marker, ...rest }) => {
 			<label className='text-gray-700 dark:text-gray-200' htmlFor={name}>
 				{label}
 			</label>
-			{marker && (
+			{ marker && (
 				<div className='absolute inset-y-0 left-0 flex items-center justify-center pl-3 pointer-events-none'>
+					
 					{marker}
+					
 				</div>
 			)}
 			<input
