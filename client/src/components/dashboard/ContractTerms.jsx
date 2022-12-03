@@ -8,8 +8,8 @@ export function ContractTerms({ nextStep }) {
 			<div className='mt-2'>
 				<p className=' text-gray-300'>
 					Creating a contract agreement is going to automatically{' '}
-					<span className='text-white'>lock funds</span> which atracts a service fee of{' '}
-					<span className='text-white'>0.8%.</span> The amount will be collecte after createing a contract.
+					<span className='text-white'>lock funds</span> in escrow which attracts a service fee of{' '}
+					<span className='text-white'>0.8%.</span> The amount will be deducted from your wallet after creating a contract.
 				</p>
 			</div>
 			<h5 className='text-[20px] leading-[30px] text-white mt-4'>Terms & Conditions</h5>
@@ -25,7 +25,7 @@ export function ContractTerms({ nextStep }) {
 			</p>
 
 			<div className='flex justify-center flex-col  w-full my-8'>
-				<Button title={'Contuninue'} variant={'primary'} onClick={nextStep} />
+				<Button title={'Continue'} variant={'primary'} onClick={nextStep} />
 			</div>
 		</div>
 	);
