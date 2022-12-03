@@ -135,7 +135,6 @@ contract Escrow is ReentrancyGuard {
         return aggrements[id];
     }
 
-
     // function to withdraw from smart contract too specified account
     function withdraw( address to, uint256 amt) external returns (bool){
         // check if conditions are met 
@@ -181,11 +180,140 @@ contract Escrow is ReentrancyGuard {
 
         return true;
     }
+    function signContract( uint256 id) external returns (bool){
+        // check if conditions are met 
+        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
+        require( aggrements[id].owner != msg.sender , " User not allowed ");
+        require( aggrements[id].signee == address(0) , " Aggreement already signed");
+        require( aggrements[id].status == Status.OPEN , " Aggreement not available");
 
-    //function to send money from the smart contract to another account
-    function pay( address to, uint256 amt ) internal returns (bool){
-        ( bool status,) = payable(to).call{ value: amt }("");
-        require(status, " Payment Unsuccessfull ");
+        // update the aggrement struct
+        aggrements[id].signee = msg.sender;
+        aggrements[id].status = Status.PENDING;
+
+        // update the total number of confirmed aggrements
+        totalConfirmedAgg++;
+
+        emit Action (
+            id,
+            "AGGREEMENT SIGNED",
+            Status.PENDING,
+            msg.sender
+        );
+
         return true;
+    }
+
+    function confirmAggrement( uint256 id) external returns (bool){
+        // check if conditions are met 
+        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
+        require( aggrements[id].owner == msg.sender , " User not allowed ");
+        require( aggrements[id].signee != address(0) , " Aggreement not signed");
+        require( aggrements[id].status == Status.PENDING , " Aggreement not available");
+
+        // update the aggrement struct
+        aggrements[id].isConfirmed = true;
+        aggrements[id].status = Status.CONFIRMED;
+
+        // update the total number of confirmed aggrements
+        totalConfirmedAgg++;
+
+        emit Action (
+            id,
+            "AGGREEMENT CONFIRMED",
+            Status.CONFIRMED,
+            msg.sender
+        );
+
+        return true;
+    }
+
+    function disputeAggrement( uint256 id) external returns (bool){
+        // check if conditions are met 
+        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
+        require( aggrements[id].owner == msg.sender , " User not allowed ");
+        require( aggrements[id].signee != address(0) , " Aggreement not signed");
+        require( aggrements[id].status == Status.PENDING , " Aggreement not available");
+
+        // update the aggrement struct
+        aggrements[id].isConfirmed = false;
+        aggrements[id].status = Status.DISPUTED;
+
+        // update the total number of confirmed aggrements
+        totalDisputed++;
+
+        emit Action (
+            id,
+            "AGGREEMENT DISPUTED",
+            Status.DISPUTED,
+            msg.sender
+        );
+
+        return true;
+    }
+
+    function cancelAggrement( uint256 id) external returns (bool){
+        // check if conditions are met 
+        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
+        require( aggrements[id].owner == msg.sender , " User not allowed ");
+        require( aggrements[id].signee != address(0) , " Aggreement not signed");
+        require( aggrements[id].status == Status.PENDING , " Aggreement not available");
+
+        // update the aggrement struct
+        aggrements[id].isConfirmed = false;
+        aggrements[id].status = Status.CANCELLED;
+
+        // update the total number of confirmed aggrements
+        totalDisputed++;
+
+        emit Action (
+            id,
+            "AGGREEMENT CANCELLED",
+            Status.CANCELLED,
+            msg.sender
+        );
+
+        return true;
+    }
+
+    function pay( address to, uint256 amt) internal returns (bool){
+        // check if conditions are met 
+        require( amt > 0 ether && amt <= companyBal , " withdrawal amount too low");
+
+        // perform transaction
+        (bool success, ) = to.call{value: amt}("");
+        require(success, "Transfer failed.");
+
+        // update available balance
+        companyBal -= amt ;
+
+        emit Action (
+            block.timestamp,
+            "PAYMENT MADE",
+            Status.PAYMENT,
+            msg.sender
+        );
+
+        return true;
+    }
+
+    function getBalance() external view returns (uint256){
+        return address(this).balance;
+    }
+
+    function getCompanyBalance() external view returns (uint256){
+        return companyBal;
+    }
+
+    function getCompanyProfit() external view returns (uint256){
+        return companyProfit;
+    }
+
+    function getCompanyAddress() external view returns (address){
+        return companyAcc;
+    }
+    
+    function getAggrementCount() external view returns (uint256){
+        return aggrements.length;
     }
 }
