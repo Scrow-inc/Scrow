@@ -19,6 +19,7 @@ export const TransactionProvider = ({ children }) => {
     const [currentAccount, setCurrentAccount] = useState("");
     const [formData, setformData] = useState({ price: "", agreement: "" });
     const [isLoading, setIsLoading] = useState(false);
+    const [balance, setBalance] = useState(undefined);
 
     // Check if wallet is connected
     const checkWalletConnected = async () => {
@@ -35,7 +36,7 @@ export const TransactionProvider = ({ children }) => {
         } catch (error) {
           console.log(error);
         }
-      };
+    };
 
     // Connect Application to Metamask wallet
     const connectWallet = async () => {
@@ -43,9 +44,9 @@ export const TransactionProvider = ({ children }) => {
           if (!ethereum) return alert("Please install MetaMask.");
     
           const accounts = await ethereum.request({ method: "eth_requestAccounts", });
+          console.log("accounts",accounts);
           setCurrentAccount(accounts[0]);
           // window.location.reload();
-          // console.log("clicked");
         } catch (error) {
           console.log(error);
           throw new Error("No ethereum object");
@@ -71,15 +72,17 @@ export const TransactionProvider = ({ children }) => {
               params : [{
                   from: currentAccount,
                   to: contractAddress,
-                  gas: '0x5208',
+                  gas: "0x55555",
+                  maxFeePerGas: "0x1234",
+                  maxPriorityFeePerGas: "0x1234",
                   value: parsedAmount._hex,
               }]
             });
 
-            const transactionHash = transactionContract.addToBlockchain(price, agreement);
+            const transactionHash = transactionContract.createAggrement(agreement, price);
 
             setIsLoading(true);
-            console.log(`Loading = ${transactionHash.hash}`);
+            console.log(`Loading = ${transactionHash}`);
             await transactionHash.wait();
             setIsLoading(false);
             console.log(`Success = ${transactionHash.hash}`);

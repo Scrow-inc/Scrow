@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Navbar, Hero, Steps, NoWalletDetected, NetworkErrorMessage, AppSection } from './components/components';
 import { ethers } from 'ethers';
 import { TransactionContext } from './context/transactionContext';
@@ -12,12 +12,13 @@ const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 function App() {
 	const [balance, setBalance] = useState(undefined);
 	const [networkError, setNetworkError] = useState(undefined);
-	const [currentAccount, setCurrentAccount] = useState(undefined);
+	// const [currentAccount, setCurrentAccount] = useState(undefined);
 	const [chainId, setChainId] = useState(undefined);
 	const [chainname, setChainName] = useState(undefined);
 
 	const provider = new ethers.providers.Web3Provider(window.ethereum);
 	const escrow = new ethers.Contract(contractAddress.Escrow, EscrowArtifacts.abi, provider.getSigner(0));
+	const { connectWallet, currentAccount } = useContext(TransactionContext)
 
 	useEffect(() => {
 		if (!currentAccount || !ethers.utils.isAddress(currentAccount)) return;
@@ -57,6 +58,7 @@ function App() {
 	};
 
 	const Initailize = async () => {
+		
 		await provider.getBalance(currentAccount).then((result) => {
 			setBalance(ethers.utils.formatEther(result));
 		});
@@ -83,7 +85,7 @@ function App() {
 	return (
 		<div className='w-full gradient-bg'>
 			{networkError && <NetworkErrorMessage message={networkError} dismiss={() => dismissNetworkError()} />}
-			<Navbar connectWallet={onClickConnect} balance={balance} />
+			<Navbar connectWallet={connectWallet} balance={balance} />
 			{currentAccount && (
 				<>
 					<AppSection />
