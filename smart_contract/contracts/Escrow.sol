@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 // initialize escrow contract
 contract Escrow is ReentrancyGuard {
-
     // declaration of variables
     address public companyAcc;
     uint256 public companyBal;
@@ -22,9 +21,11 @@ contract Escrow is ReentrancyGuard {
         PENDING,
         DELIVERY,
         CONFIRMED,
-        DISPUTTED,
+        DISPUTED,
         REFUNDED,
-        WITHDRAWED
+        WITHDRAWED,
+        CANCELLED,
+        PAYMENT
     }
 
     enum Available {
@@ -70,7 +71,7 @@ contract Escrow is ReentrancyGuard {
         address indexed executor
     );
 
-    constructor( uint256 _percentCharges) {
+    constructor(uint256 _percentCharges) {
         companyAcc = msg.sender;
         companyBal = 0;
         companyProfit = 0;
@@ -80,15 +81,17 @@ contract Escrow is ReentrancyGuard {
     // declaration of functions
 
     // creates a new aggrement
-    function createAggrement(string calldata _details, uint256 _amount) public returns (bool){
-        
+    function createAggrement(string calldata _details, uint256 _amount)
+        public
+        returns (bool)
+    {
         require(bytes(_details).length > 0, "Details cannot be empty");
         require(_amount > 0, "Amount must not be zero");
-        
+
         // increament the total number of contracts on the smart contract
         uint256 aggrementId = totalAgg++;
         AggrementStruct storage newAggremnt = aggrements[aggrementId];
-        
+
         // populates the aggrement struct
         newAggremnt.id = aggrementId;
         newAggremnt.details = _details;
@@ -104,10 +107,10 @@ contract Escrow is ReentrancyGuard {
 
         aggrementsOf[msg.sender].push(newAggremnt); //populate individual aggrement
         aggrements[aggrementId] = newAggremnt;
-        
-        pay( companyAcc , _amount);
+
+        pay(companyAcc, _amount);
         companyBal += _amount;
-        
+
         emit Action(aggrementId, "AGGREEMENT CREATED", Status.OPEN, msg.sender);
         return true;
     }
@@ -118,7 +121,10 @@ contract Escrow is ReentrancyGuard {
     }
 
     // function returns all aggrements in the contract
-    function AllAggrements() external view returns (AggrementStruct[] memory _aggrements)
+    function AllAggrements()
+        external
+        view
+        returns (AggrementStruct[] memory _aggrements)
     {
         _aggrements = new AggrementStruct[](totalAgg);
 
@@ -130,24 +136,30 @@ contract Escrow is ReentrancyGuard {
     }
 
     // function returns all aggrements in the contract
-    function singleAggrement( uint256 id) external view returns (AggrementStruct memory )
+    function singleAggrement(uint256 id)
+        external
+        view
+        returns (AggrementStruct memory)
     {
         return aggrements[id];
     }
 
     // function to withdraw from smart contract too specified account
-    function withdraw( address to, uint256 amt) external returns (bool){
-        // check if conditions are met 
-        require( msg.sender == companyAcc , " User not allowed ");
-        require( amt > 0 ether && amt <= companyProfit , " withdrawal amount too low");
+    function withdraw(address to, uint256 amt) external returns (bool) {
+        // check if conditions are met
+        require(msg.sender == companyAcc, " User not allowed ");
+        require(
+            amt > 0 ether && amt <= companyProfit,
+            " withdrawal amount too low"
+        );
 
         // perform transaction
-        pay(to,amt);
+        pay(to, amt);
 
         // update available balance
-        companyProfit -= amt ;
+        companyProfit -= amt;
 
-        emit Action (
+        emit Action(
             block.timestamp,
             "WITHDRAWED",
             Status.WITHDRAWED,
@@ -157,35 +169,39 @@ contract Escrow is ReentrancyGuard {
         return true;
     }
 
-    function refund( uint256 id ) external returns (bool){
-        
-        // check if conditions are met 
-        require( msg.sender == companyAcc , " User not allowed ");
-        require( !aggrements[id].isConfirmed, " Aggreement already fullfilled");
-        
-        // refund amount to the specified Aggrement Owner 
-        pay(aggrements[id].owner , aggrements[id].amount );
+    function refund(uint256 id) external returns (bool) {
+        // check if conditions are met
+        require(msg.sender == companyAcc, " User not allowed ");
+        require(!aggrements[id].isConfirmed, " Aggreement already fullfilled");
+
+        // refund amount to the specified Aggrement Owner
+        pay(aggrements[id].owner, aggrements[id].amount);
 
         // update the total balance of the smart contract
         companyBal -= aggrements[id].amount;
         aggrements[id].status = Status.REFUNDED;
         totalDisputed++;
 
-        emit Action (
-            id,
-            "REFUNDED",
-            Status.REFUNDED,
-            msg.sender
-        );
+        emit Action(id, "REFUNDED", Status.REFUNDED, msg.sender);
 
         return true;
     }
-    function signContract( uint256 id) external returns (bool){
-        // check if conditions are met 
-        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
-        require( aggrements[id].owner != msg.sender , " User not allowed ");
-        require( aggrements[id].signee == address(0) , " Aggreement already signed");
-        require( aggrements[id].status == Status.OPEN , " Aggreement not available");
+
+    function signContract(uint256 id) external returns (bool) {
+        // check if conditions are met
+        require(
+            aggrements[id].isAvailable == Available.YES,
+            " Aggreement not available"
+        );
+        require(aggrements[id].owner != msg.sender, " User not allowed ");
+        require(
+            aggrements[id].signee == address(0),
+            " Aggreement already signed"
+        );
+        require(
+            aggrements[id].status == Status.OPEN,
+            " Aggreement not available"
+        );
 
         // update the aggrement struct
         aggrements[id].signee = msg.sender;
@@ -194,22 +210,23 @@ contract Escrow is ReentrancyGuard {
         // update the total number of confirmed aggrements
         totalConfirmedAgg++;
 
-        emit Action (
-            id,
-            "AGGREEMENT SIGNED",
-            Status.PENDING,
-            msg.sender
-        );
+        emit Action(id, "AGGREEMENT SIGNED", Status.PENDING, msg.sender);
 
         return true;
     }
 
-    function confirmAggrement( uint256 id) external returns (bool){
-        // check if conditions are met 
-        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
-        require( aggrements[id].owner == msg.sender , " User not allowed ");
-        require( aggrements[id].signee != address(0) , " Aggreement not signed");
-        require( aggrements[id].status == Status.PENDING , " Aggreement not available");
+    function confirmAggrement(uint256 id) external returns (bool) {
+        // check if conditions are met
+        require(
+            aggrements[id].isAvailable == Available.YES,
+            " Aggreement not available"
+        );
+        require(aggrements[id].owner == msg.sender, " User not allowed ");
+        require(aggrements[id].signee != address(0), " Aggreement not signed");
+        require(
+            aggrements[id].status == Status.PENDING,
+            " Aggreement not available"
+        );
 
         // update the aggrement struct
         aggrements[id].isConfirmed = true;
@@ -218,22 +235,23 @@ contract Escrow is ReentrancyGuard {
         // update the total number of confirmed aggrements
         totalConfirmedAgg++;
 
-        emit Action (
-            id,
-            "AGGREEMENT CONFIRMED",
-            Status.CONFIRMED,
-            msg.sender
-        );
+        emit Action(id, "AGGREEMENT CONFIRMED", Status.CONFIRMED, msg.sender);
 
         return true;
     }
 
-    function disputeAggrement( uint256 id) external returns (bool){
-        // check if conditions are met 
-        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
-        require( aggrements[id].owner == msg.sender , " User not allowed ");
-        require( aggrements[id].signee != address(0) , " Aggreement not signed");
-        require( aggrements[id].status == Status.PENDING , " Aggreement not available");
+    function disputeAggrement(uint256 id) external returns (bool) {
+        // check if conditions are met
+        require(
+            aggrements[id].isAvailable == Available.YES,
+            " Aggreement not available"
+        );
+        require(aggrements[id].owner == msg.sender, " User not allowed ");
+        require(aggrements[id].signee != address(0), " Aggreement not signed");
+        require(
+            aggrements[id].status == Status.PENDING,
+            " Aggreement not available"
+        );
 
         // update the aggrement struct
         aggrements[id].isConfirmed = false;
@@ -242,22 +260,23 @@ contract Escrow is ReentrancyGuard {
         // update the total number of confirmed aggrements
         totalDisputed++;
 
-        emit Action (
-            id,
-            "AGGREEMENT DISPUTED",
-            Status.DISPUTED,
-            msg.sender
-        );
+        emit Action(id, "AGGREEMENT DISPUTED", Status.DISPUTED, msg.sender);
 
         return true;
     }
 
-    function cancelAggrement( uint256 id) external returns (bool){
-        // check if conditions are met 
-        require( aggrements[id].isAvailable == Available.YES , " Aggreement not available");
-        require( aggrements[id].owner == msg.sender , " User not allowed ");
-        require( aggrements[id].signee != address(0) , " Aggreement not signed");
-        require( aggrements[id].status == Status.PENDING , " Aggreement not available");
+    function cancelAggrement(uint256 id) external returns (bool) {
+        // check if conditions are met
+        require(
+            aggrements[id].isAvailable == Available.YES,
+            " Aggreement not available"
+        );
+        require(aggrements[id].owner == msg.sender, " User not allowed ");
+        require(aggrements[id].signee != address(0), " Aggreement not signed");
+        require(
+            aggrements[id].status == Status.PENDING,
+            " Aggreement not available"
+        );
 
         // update the aggrement struct
         aggrements[id].isConfirmed = false;
@@ -266,28 +285,26 @@ contract Escrow is ReentrancyGuard {
         // update the total number of confirmed aggrements
         totalDisputed++;
 
-        emit Action (
-            id,
-            "AGGREEMENT CANCELLED",
-            Status.CANCELLED,
-            msg.sender
-        );
+        emit Action(id, "AGGREEMENT CANCELLED", Status.CANCELLED, msg.sender);
 
         return true;
     }
 
-    function pay( address to, uint256 amt) internal returns (bool){
-        // check if conditions are met 
-        require( amt > 0 ether && amt <= companyBal , " withdrawal amount too low");
+    function pay(address to, uint256 amt) internal returns (bool) {
+        // check if conditions are met
+        require(
+            amt > 0 ether && amt <= companyBal,
+            " withdrawal amount too low"
+        );
 
         // perform transaction
         (bool success, ) = to.call{value: amt}("");
         require(success, "Transfer failed.");
 
         // update available balance
-        companyBal -= amt ;
+        companyBal -= amt;
 
-        emit Action (
+        emit Action(
             block.timestamp,
             "PAYMENT MADE",
             Status.PAYMENT,
@@ -297,23 +314,23 @@ contract Escrow is ReentrancyGuard {
         return true;
     }
 
-    function getBalance() external view returns (uint256){
+    function getBalance() external view returns (uint256) {
         return address(this).balance;
     }
 
-    function getCompanyBalance() external view returns (uint256){
+    function getCompanyBalance() external view returns (uint256) {
         return companyBal;
     }
 
-    function getCompanyProfit() external view returns (uint256){
+    function getCompanyProfit() external view returns (uint256) {
         return companyProfit;
     }
 
-    function getCompanyAddress() external view returns (address){
+    function getCompanyAddress() external view returns (address) {
         return companyAcc;
     }
-    
-    function getAggrementCount() external view returns (uint256){
-        return aggrements.length;
-    }
+
+    // function getAggrementCount() external view returns (uint256) {
+    //     return aggrements.length;
+    // }
 }
