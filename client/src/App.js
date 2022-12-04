@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Navbar, Footer, Hero, Steps, NoWalletDetected, NetworkErrorMessage, AppSection } from './components/components';
 import { ethers } from 'ethers';
 import { TransactionContext } from './context/transactionContext';
